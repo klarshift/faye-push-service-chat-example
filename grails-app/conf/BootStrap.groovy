@@ -10,6 +10,7 @@ class BootStrap {
 
     def init = { servletContext ->
 		String pushHost = grailsApplication.config.chat.pushHost
+		println "PUSHHOST: $pushHost"
 		
 		// create faye services
 		FayeEndpoint chatEndpoint = pushService.createEndpoint("chat", pushHost)
