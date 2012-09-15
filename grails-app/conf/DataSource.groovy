@@ -24,7 +24,11 @@ environments {
         }
     }
     production {
-        dataSource {
+		dataSource {
+			dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+			url = "jdbc:h2:mem:klarshift-chat;MVCC=TRUE"
+		}
+        /*dataSource {
             dbCreate = "update"
             url = "jdbc:h2:prodDb;MVCC=TRUE"
             pooled = true
@@ -38,6 +42,6 @@ environments {
                testOnReturn=true
                validationQuery="SELECT 1"
             }
-        }
+        }*/
     }
 }
