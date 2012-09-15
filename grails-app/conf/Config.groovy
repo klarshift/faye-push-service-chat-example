@@ -68,7 +68,7 @@ environments {
     production {
         grails.logging.jul.usebridge = false
 		chat.pushHost="http://klarshift.de:8000"
-        grails.serverURL = "http://chat.klarshift.com"
+        grails.serverURL = "http://chat.klarshift.de"
     }
 }
 
