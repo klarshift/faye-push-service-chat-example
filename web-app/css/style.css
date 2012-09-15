@@ -1,0 +1,40 @@
+body{
+	padding: 20px;
+}
+
+#page{	
+	
+}
+
+.controls{
+	text-align: right;
+	float: right;
+	width: 200px;
+	margin-bottom: 10px;
+}
+
+div.clear{
+	clear: both;
+}
+
+div.roomMessages{
+	height: 120px;
+	overflow: hidden;	
+	margin-bottom: 20px;	
+}
+
+.systemMessage{
+	font-style: italic;
+}
+
+input.userNameInput{
+	display: none;
+}
+
+span.changeName{
+	cursor: pointer;
+}
+
+textarea.message{
+	width: 98%;
+}
