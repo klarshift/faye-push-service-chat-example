@@ -2,12 +2,13 @@
 	var sHolder = {};
 	var snd = new Audio("${g.createLink(uri: '/sound/message.ogg')}");
 	var uUUID = "${chatUser.uuid}";
+	var client = new Faye.Client('${ps.clientUrl(endpoint: 'chat')}');
 		
 	$(document).ready(function() {		
 		initRoomList();
 
 		// public subscribe
-		var client = new Faye.Client('http://localhost:8000/faye');
+		
 		client.subscribe('/public', function(data) {				
 			var broadcast = JSON.parse(data);
 			console.log(broadcast)
@@ -122,8 +123,7 @@
 
 					$("#openRoom-" + uuid + " .users").html(data.usersHtml);
 
-					// subscribe
-					var client = new Faye.Client('http://localhost:8000/faye');
+					// subscribe					
 					var subscription = client.subscribe('/room/' + uuid,
 							function(data) {
 								var json = JSON.parse(data);
