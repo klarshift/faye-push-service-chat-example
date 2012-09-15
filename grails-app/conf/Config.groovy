@@ -63,9 +63,11 @@ grails.hibernate.cache.queries = true
 environments {
     development {
         grails.logging.jul.usebridge = true
+		chat.pushHost="http://localhost:8000"
     }
     production {
         grails.logging.jul.usebridge = false
+		chat.pushHost="http://klarshift.de:8000"
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }

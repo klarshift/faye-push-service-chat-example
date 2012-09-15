@@ -6,10 +6,13 @@ import com.klarshift.grails.plugins.pushservice.FayeEndpoint
 class BootStrap {
 	def pushService
 	def chatService
+	def grailsApplication
 
     def init = { servletContext ->
+		String pushHost = grailsApplication.config.chat.pushHost
+		
 		// create faye services
-		FayeEndpoint chatEndpoint = pushService.createEndpoint("chat", "http://localhost:8000")
+		FayeEndpoint chatEndpoint = pushService.createEndpoint("chat", pushHost)
 		FayeChannel publicChannel = pushService.createChannel(chatEndpoint, '/public')		
 		chatEndpoint.save(flush: true, failOnError: true) 
 		
