@@ -2,8 +2,6 @@ package chat
 
 import grails.gsp.PageRenderer
 
-import com.klarshift.grails.plugins.pushservice.FayeEndpoint
-
 
 /**
  * chat service
@@ -17,7 +15,7 @@ class ChatService {
 	def pushService
 	
 	public void cleanup(){
-		long now = new Date().getTime()-1000*15
+		long now = (new Date().getTime())-(1000*60*30)
 		Date tDate = new Date(now)
 		def inactiveUsers = ChatUser.withCriteria {
 			lt('lastAction', tDate)

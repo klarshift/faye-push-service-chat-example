@@ -38,3 +38,8 @@ span.changeName{
 textarea.message{
 	width: 98%;
 }
+
+div#footer{
+	font-size: 9px;
+	float: right;
+}

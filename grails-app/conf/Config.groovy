@@ -113,6 +113,6 @@ grails.plugin.quartz2.jobSetup.chatServices = { quartzScheduler, ctx ->
 	def jobDetail = ClosureJob.createJob { jobCtx , appCtx->
 		appCtx.chatService.cleanup()
 	}
-	def trigger = new SimpleTriggerImpl(name:"cleanTrigger", startTime:new Date(),repeatInterval:15*60*1000,repeatCount:-1)
+	def trigger = new SimpleTriggerImpl(name:"cleanTrigger", startTime:new Date(),repeatInterval:5000,repeatCount:-1)
 	quartzScheduler.scheduleJob(jobDetail, trigger)
 }

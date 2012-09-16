@@ -9,8 +9,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title><g:layoutTitle default="klarshift - Realtime Chat Demo with faye.js and Grails" /></title>
+<title><g:layoutTitle default="klarshift - Realtime Chat Demo with node.js/faye and Grails" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="${r.resource(uri: '/images/favicon.png') }" rel="shortcut icon" />
 <r:require module="application" />
 <g:layoutHead />
 <r:layoutResources />
@@ -26,8 +27,7 @@
 							<span class="icon-bar"></span> <span class="icon-bar"></span>
 						</a> <a class="brand" href="${g.createLink(uri: '/') }">klarshift - Realtime Chat</a>
 						<div class="nav-collapse subnav-collapse">
-							<ul class="nav">
-								<li class="${controllerName == 'chat' ? 'active' : '' }"><a href="${g.createLink(uri: '/') }">Home</a></li>
+							<ul class="nav">								
 								<li class="${controllerName != 'chat' ? 'active' : '' }"><a href="${g.createLink(uri: '/about') }">About</a></li>								
 							</ul>						
 						</div>
@@ -38,6 +38,7 @@
 				<!-- /navbar-inner -->
 			</div>
 			<g:layoutBody />
+			<div id="footer">powered by <a href="http://www.klarshift.de" title="klarshift">klarshift.de</a></div>
 		</div>
 	</div>
 	<r:layoutResources />
