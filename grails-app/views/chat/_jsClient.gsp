@@ -1,6 +1,6 @@
 <script type="text/javascript">
 	var sHolder = {};
-	var snd = new Audio("${g.createLink(uri: '/sound/message.ogg')}");
+	var snd = new Audio("${g.createLink(absolute: true, uri: '/sound/message.ogg')}");
 	var uUUID = "${chatUser.uuid}";
 	var client = new Faye.Client('${ps.clientUrl(endpoint: 'chat')}');
 		
@@ -36,7 +36,11 @@
 			data = broadcast.data;									
 			if(command == 'info'){
 				addMessage(data.room, data.message);
-			}												
+			}else if(command == 'sessionExpired'){
+				$("div.row").remove();
+				alert("Sorry, but your session expired! Please reload or close chat.");
+				
+			}											
 		});
 
 		// colors
@@ -69,7 +73,7 @@
 	}
 
 	function chat(action, data, callback){
-		$.post('${g.createLink(uri: "/chat/")}' + action, data, callback);
+		$.post('${g.createLink(absolute: true, uri: "/chat/")}' + action, data, callback);
 	}
 
 	function hookReturn(selector, callback) {

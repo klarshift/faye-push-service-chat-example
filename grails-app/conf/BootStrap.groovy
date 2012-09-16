@@ -1,6 +1,3 @@
-import chat.ChatRoom
-
-import com.klarshift.grails.plugins.pushservice.FayeChannel
 import com.klarshift.grails.plugins.pushservice.FayeEndpoint
 
 class BootStrap {
@@ -9,19 +6,11 @@ class BootStrap {
 	def grailsApplication
 
     def init = { servletContext ->
-		String pushHost = grailsApplication.config.chat.pushHost
-		println "PUSHHOST: $pushHost"
-		
-		// create faye services
-		FayeEndpoint chatEndpoint = pushService.createEndpoint("chat", pushHost)
-		FayeChannel publicChannel = pushService.createChannel(chatEndpoint, '/public')		
-		chatEndpoint.save(flush: true, failOnError: true) 
-		
-		// create chat rooms
-		["Welcome"].each{ String roomName ->
-			ChatRoom room = chatService.createRoom(roomName, null)		
-			room.save(flush: true, failOnError: true)
-		}
+		// create chat endpoint
+		FayeEndpoint chatEndpoint = pushService.createEndpoint("chat", grailsApplication.config.chat.pushHost)
+				
+		// create chat room
+		chatService.createRoom("Welcome", null)				
     }
     def destroy = {
     }

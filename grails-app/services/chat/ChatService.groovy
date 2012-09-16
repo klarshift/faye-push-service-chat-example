@@ -2,7 +2,6 @@ package chat
 
 import grails.gsp.PageRenderer
 
-import com.klarshift.grails.plugins.pushservice.FayeChannel
 import com.klarshift.grails.plugins.pushservice.FayeEndpoint
 
 
@@ -16,6 +15,45 @@ class ChatService {
 	Random random = new Random()
 	def colors = ['113F8C', '61AE24', 'E54028', 'F18D05', '616161']
 	def pushService
+	
+	public void cleanup(){
+		long now = new Date().getTime()-1000*15
+		Date tDate = new Date(now)
+		def inactiveUsers = ChatUser.withCriteria {
+			lt('lastAction', tDate)
+		}
+		
+		inactiveUsers.each{ChatUser u -> kickUser(u)}
+	}
+	
+	private void kickUser(ChatUser user){
+		def joinedRooms = getJoinedRooms(user)
+		joinedRooms.each{ ChatRoom r ->
+			roomInfo(r, "User `$user` kicked out due no action ...")
+			leaveRoom(user, r)
+			
+			if(r.moderator == user){
+				deleteRoom(user, r)
+			}
+		}
+		
+		deleteUser(user)		
+	}
+	
+	private void deleteUser(ChatUser user){
+		privatePublish(user, "sessionExpired", [:])
+		user.delete(flush: true)
+	}
+	
+	private void triggerUserAction(ChatUser user){
+		user.lastAction = new Date()
+		user.save(flush: true)
+	}
+	
+	private void triggerRoomAction(ChatRoom room){
+		room.lastAction = new Date()
+		room.save(flush: true)
+	}
 
 	/**
 	 * publish something to chat channel
@@ -25,9 +63,7 @@ class ChatService {
 	private void publish(String channel, data){		
 		pushService.publish("chat", channel, data)	
 	}
-		
-	
-	
+			
 	private void broadcast(String command, data){
 		publish("/public", [command: command, data: data])
 	}
@@ -81,6 +117,7 @@ class ChatService {
 		message = cleanString(message)
 		
 		if(message.length() > 0){
+			triggerUserAction(sender)
 			message = groovyPageRenderer.render(template: '/chat/message', model: [user: sender, message: message])
 			roomBroadcast("message", room, [sender: [name: sender.name, uuid: sender.uuid], message: message])
 		}		
@@ -112,6 +149,8 @@ class ChatService {
 		String oldName = user.name
 		name = cleanString(name)
 		if(name.size() > 0 && user.name != name){
+			triggerUserAction(user)
+			
 			user.name = name
 			user.save(flush: true)
 			
@@ -139,6 +178,8 @@ class ChatService {
 		if(user.color == color)return false
 		user.color = color
 		user.save(flush: true)
+		
+		triggerUserAction(user)
 		
 		// 
 		getJoinedRooms(user).each{ ChatRoom r ->
@@ -199,7 +240,8 @@ class ChatService {
 		ChatRoom room = new ChatRoom(name: name, uuid: UUID.randomUUID().toString(), moderator: moderator)
 		
 		// create the channel
-		createRoomChannel(room)
+		if(moderator)
+			triggerUserAction(moderator)
 		
 		if(room.save(flush: true)){
 			updateRooms()
@@ -207,18 +249,6 @@ class ChatService {
 		}
 		
 		return null
-	}
-	
-	/**
-	 * create a rooms channel
-	 * @param room
-	 * @return
-	 */
-	private FayeChannel createRoomChannel(ChatRoom room){
-		FayeEndpoint chatEndpoint = FayeEndpoint.findByName("chat")
-		FayeChannel channel = pushService.createChannel(chatEndpoint, getChannelNameForRoom(room), true)
-		chatEndpoint.addToChannels(channel).save(flush: true, failOnError: true)
-		return channel
 	}
 	
 	/**
@@ -244,6 +274,7 @@ class ChatService {
 		// inform room about new user
 		roomInfo(room, "User $user has entered.")
 		
+		triggerUserAction(user)
 		updateRooms()
 		updateUsers(room)
 		

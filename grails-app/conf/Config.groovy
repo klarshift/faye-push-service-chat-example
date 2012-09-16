@@ -1,3 +1,7 @@
+import grails.plugin.quartz2.ClosureJob
+
+import org.quartz.impl.triggers.SimpleTriggerImpl
+
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -92,4 +96,23 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+}
+
+// quartz setup
+grails.plugin.quartz2.autoStartup = true
+org{
+	quartz{
+		scheduler.instanceName = 'ChatScheduler'
+		threadPool.class = 'org.quartz.simpl.SimpleThreadPool'
+		threadPool.threadCount = 20
+		threadPool.threadsInheritContextClassLoaderOfInitializingThread = true
+		jobStore.class = 'org.quartz.simpl.RAMJobStore'
+	}
+}
+grails.plugin.quartz2.jobSetup.chatServices = { quartzScheduler, ctx ->
+	def jobDetail = ClosureJob.createJob { jobCtx , appCtx->
+		appCtx.chatService.cleanup()
+	}
+	def trigger = new SimpleTriggerImpl(name:"cleanTrigger", startTime:new Date(),repeatInterval:15*60*1000,repeatCount:-1)
+	quartzScheduler.scheduleJob(jobDetail, trigger)
 }

@@ -10,6 +10,7 @@ class ChatRoom {
 	String name
 	Integer maxUsers = 0
 	Boolean open = true
+	Date lastAction
 	
 	static belongsTo = [moderator : ChatUser]
 	static hasMany = [users : ChatUser]
@@ -17,6 +18,7 @@ class ChatRoom {
     static constraints = {
 		name unique: true
 		moderator nullable: true
+		lastAction nullable: true
     }
 	
 	public String toString(){
